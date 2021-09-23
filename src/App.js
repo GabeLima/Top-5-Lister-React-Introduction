@@ -6,10 +6,10 @@ import DBManager from './db/DBManager';
 
 // THESE ARE OUR REACT COMPONENTS
 import DeleteModal from './components/DeleteModal';
-import Banner from './components/Banner.js'
-import Sidebar from './components/Sidebar.js'
+import Banner from './components/Banner.js';
+import Sidebar from './components/Sidebar.js';
 import Workspace from './components/Workspace.js';
-import Statusbar from './components/Statusbar.js'
+import Statusbar from './components/Statusbar.js';
 
 class App extends React.Component {
     constructor(props) {
@@ -24,7 +24,11 @@ class App extends React.Component {
         // SETUP THE INITIAL STATE
         this.state = {
             currentList : null,
-            sessionData : loadedSessionData
+            sessionData : loadedSessionData,
+            listKeyPair : {
+                key : "",
+                name : ""
+            }
         }
     }
     sortKeyNamePairsByName = (keyNamePairs) => {
@@ -64,7 +68,8 @@ class App extends React.Component {
                 nextKey: prevState.sessionData.nextKey + 1,
                 counter: prevState.sessionData.counter + 1,
                 keyNamePairs: updatedPairs
-            }
+            },
+            listKeyPair : prevState.listKeyPair
         }), () => {
             // PUTTING THIS NEW LIST IN PERMANENT STORAGE
             // IS AN AFTER EFFECT
@@ -124,16 +129,25 @@ class App extends React.Component {
             // ANY AFTER EFFECTS?
         });
     }
-    deleteList = () => {
+    deleteList = (key) => {
+        console.log("Passed the key: ", key);
+        this.setState(prevState => ({
+            currentList: prevState.currentList,
+            sessionData: prevState.sessionData,
+            listKeyPair: key
+
+        }), () => {
+            // ANY AFTER EFFECTS?
+        });
         // SOMEHOW YOU ARE GOING TO HAVE TO FIGURE OUT
         // WHICH LIST IT IS THAT THE USER WANTS TO
         // DELETE AND MAKE THAT CONNECTION SO THAT THE
         // NAME PROPERLY DISPLAYS INSIDE THE MODAL
-        this.showDeleteListModal();
+        this.showDeleteListModal(key);
     }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
-    showDeleteListModal() {
+    showDeleteListModal(key) {
         let modal = document.getElementById("delete-modal");
         modal.classList.add("is-visible");
     }
@@ -141,6 +155,17 @@ class App extends React.Component {
     hideDeleteListModal() {
         let modal = document.getElementById("delete-modal");
         modal.classList.remove("is-visible");
+    }
+    //THIS FUNCTION IS FOR DELETING A LIST AND HIDING THE MODAL
+    deleteListHideModal = () => {
+        // @TODO 
+        // GOTTA SOMEHOW DELETE THE LIST, LOOK AT THE DELETELIST FN
+        console.log("Attempting to delete a list... NEED THE NAME");
+        this.hideDeleteListModal();
+    }
+    getListKeyPair = () => {
+        console.log("Fuck");
+        return this.listKeyPair
     }
     render() {
         return (
@@ -163,6 +188,8 @@ class App extends React.Component {
                     currentList={this.state.currentList} />
                 <DeleteModal
                     hideDeleteListModalCallback={this.hideDeleteListModal}
+                    deleteListCallBack = {this.deleteListHideModal}
+                    listKeyPair = {this.state.listKeyPair}
                 />
             </div>
         );
