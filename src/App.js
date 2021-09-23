@@ -160,6 +160,20 @@ class App extends React.Component {
     deleteListHideModal = () => {
         // @TODO 
         // GOTTA SOMEHOW DELETE THE LIST, LOOK AT THE DELETELIST FN
+        let newKeyNamePairs = this.state.sessionData.keyNamePairs;
+        let listRemoving = this.state.listKeyPair.key
+        newKeyNamePairs = newKeyNamePairs.filter(item => item.key !== listRemoving)
+        console.log(newKeyNamePairs);
+        this.setState(prevState => ({
+            currentList: prevState.currentList,
+            sessionData: {
+                nextKey: prevState.sessionData.nextKey,
+                counter: prevState.sessionData.counter,
+                keyNamePairs: newKeyNamePairs
+            }
+        }), () => {
+            //ANY AFTER EFFECTS OF DELETING A LIST?
+        });
         console.log("Attempting to delete a list... NEED THE NAME");
         this.hideDeleteListModal();
     }
