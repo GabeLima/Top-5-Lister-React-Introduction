@@ -4,7 +4,6 @@ export default class DeleteModal extends Component {
     render() {
         const { listKeyPair, hideDeleteListModalCallback, deleteListCallBack} = this.props;
         let name = "";
-        console.log(listKeyPair);
         if (listKeyPair) {
             name = listKeyPair.name;
         }

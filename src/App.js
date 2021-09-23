@@ -172,14 +172,11 @@ class App extends React.Component {
                 keyNamePairs: newKeyNamePairs
             }
         }), () => {
-            //ANY AFTER EFFECTS OF DELETING A LIST?
+            this.db.mutationUpdateSessionData(this.state.sessionData);
+            //ANY AFTER EFFECTS OF DELETING A LIST? YES, HAVE TO SAVE
         });
         console.log("Attempting to delete a list... NEED THE NAME");
         this.hideDeleteListModal();
-    }
-    getListKeyPair = () => {
-        console.log("Fuck");
-        return this.listKeyPair
     }
     render() {
         return (
