@@ -178,6 +178,13 @@ class App extends React.Component {
         console.log("Attempting to delete a list... NEED THE NAME");
         this.hideDeleteListModal();
     }
+    saveLists = () =>{
+        console.log("Inside saveLists");
+        this.db.mutationUpdateList(this.state.currentList);
+        // this.db.mutationUpdateSessionData(this.state.sessionData);
+        // this.Workspace.handleKeyPress(e);
+    }
+
     render() {
         return (
             <div id="app-root">
@@ -194,7 +201,8 @@ class App extends React.Component {
                     renameListCallback={this.renameList}
                 />
                 <Workspace
-                    currentList={this.state.currentList} />
+                    currentList={this.state.currentList} 
+                    saveListCallback = {this.saveLists}/>
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteModal

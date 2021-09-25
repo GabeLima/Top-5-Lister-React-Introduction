@@ -1,7 +1,6 @@
 import React from "react";
 
 
-
 export default class Workspace extends React.Component {
     constructor(props) {
         super(props);
@@ -35,16 +34,20 @@ export default class Workspace extends React.Component {
     }
     handleBlur = (event) => {
         this.handleUpdate(event);
+        // this.props.items = this.state.items;
         this.setState({ itemNumber: -1});
+        this.props.saveListCallback();
     }
     handleKeyPress = (event) => {
         if(event.key === 'Enter'){
+            // this.props.items = this.state.items;
             this.handleUpdate(event);
             this.setState({ itemNumber: -1});
+            this.props.saveListCallback();
         }
     }
     render() {
-        const { currentList } = this.props;
+        const { currentList} = this.props;
         let items = ["","","","",""];
         if (currentList) {
             items = currentList.items;
@@ -62,7 +65,7 @@ export default class Workspace extends React.Component {
                     <div id="edit-items">
                     {this.state.itemNumber === 0? 
                         <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} onChange={this.handleUpdate} defaultValue={items[0]} type='text'/>: 
-                        <div className="top5-item"  onClick={(e) => {this.handleClick(e, 0, items); }}>{items[0]}</div>}
+                        <div className="top5-item" onClick={(e) => {this.handleClick(e, 0, items); }}>{items[0]}</div>}
 
 
                         {this.state.itemNumber === 1? 

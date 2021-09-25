@@ -37,7 +37,7 @@ export default class ListCard extends React.Component {
         this.setState({ text: event.target.value });
     }
     handleKeyPress = (event) => {
-        if (event.code === "Enter") {
+        if (event.key === "Enter") {
             this.handleBlur();
         }
     }
@@ -55,6 +55,7 @@ export default class ListCard extends React.Component {
         if (this.state.editActive) {
             return (
                 <input
+                    autoFocus
                     id={"list-" + keyNamePair.name}
                     className='list-card'
                     type='text'
