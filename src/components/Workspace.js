@@ -1,5 +1,5 @@
 import React from "react";
-
+import { DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
 
 export default class Workspace extends React.Component {
     constructor(props) {
@@ -67,27 +67,50 @@ export default class Workspace extends React.Component {
                         <div className="item-number">4.</div>
                         <div className="item-number">5.</div>
                     </div>
-                    <div id="edit-items">
-                        {this.state.itemNumber === 0? 
-                        <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[0]} type='text'/>: 
-                        <div className="top5-item" onClick={(e) => {this.handleClick(e, 0, items); }}>{items[0]}</div>}
+                    <DragDropContext>
+                        <Droppable droppableId = "characters">
+                            {(provided) => (
 
-                        {this.state.itemNumber === 1? 
-                        <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[1]} type='text'/>: 
-                        <div className="top5-item"  onClick={(e) => {this.handleClick(e, 1, items); }}>{items[1]}</div>}
+                            <div id="edit-items" {...provided.droppableProps} ref = {provided.innerRef}>
 
-                        {this.state.itemNumber === 2? 
-                        <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[2]} type='text'/>: 
-                        <div className="top5-item"  onClick={(e) => {this.handleClick(e, 2, items); }}>{items[2]}</div>}
+                                <Draggable draggableId = "top5-item-0" index = {0}>
+                                    {(provided) => (
+                                        <div className="top5-item" {...provided.draggableProps} {...provided.dragHandleProps} ref = {provided.innerRef}>
+                                            {this.state.itemNumber === 0? 
+                                            <input autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[0]} type='text'/>: 
+                                            <div onClick={(e) => {this.handleClick(e, 0, items); }}>{items[0]}</div>}
+                                        </div>
+                                    )}
+                                </Draggable>
+                                
+                                <Draggable draggableId = "top5-item-1" index = {1}>
+                                    {(provided) => (
+                                        <div className="top5-item" {...provided.draggableProps} {...provided.dragHandleProps} ref = {provided.innerRef}>
+                                            {this.state.itemNumber === 1? 
+                                            <input autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[1]} type='text'/>: 
+                                            <div onClick={(e) => {this.handleClick(e, 1, items); }}>{items[1]}</div>}
+                                        </div>
+                                    )}
+                                </Draggable>
 
-                        {this.state.itemNumber === 3? 
-                        <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[3]} type='text'/>: 
-                        <div className="top5-item"  onClick={(e) => {this.handleClick(e, 3, items); }}>{items[3]}</div>}
-                        
-                        {this.state.itemNumber === 4? 
-                        <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[4]} type='text'/>: 
-                        <div className="top5-item"  onClick={(e) => {this.handleClick(e, 4, items); }}>{items[4]}</div>}
-                    </div>
+                                {this.state.itemNumber === 2? 
+                                <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[2]} type='text'/>: 
+                                <div className="top5-item"  onClick={(e) => {this.handleClick(e, 2, items); }}>{items[2]}</div>}
+
+                                {this.state.itemNumber === 3? 
+                                <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[3]} type='text'/>: 
+                                <div className="top5-item"  onClick={(e) => {this.handleClick(e, 3, items); }}>{items[3]}</div>}
+                                
+                                {this.state.itemNumber === 4? 
+                                <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[4]} type='text'/>: 
+                                <div className="top5-item"  onClick={(e) => {this.handleClick(e, 4, items); }}>{items[4]}</div>}
+                            
+                            
+                            {provided.placeholder}
+                            </div>
+                        )}
+                        </Droppable>
+                    </DragDropContext>
                 </div>
             </div>
         )
