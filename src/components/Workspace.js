@@ -70,6 +70,7 @@ export default class Workspace extends React.Component {
             this.handleBlur(event);
         }
     }
+
     // handleOnDragEnd = (result, items) =>{
     //     if(!result.destination) return;
     //     let oldIndex = result.source.index;
@@ -134,6 +135,9 @@ export default class Workspace extends React.Component {
         this.moveItem(oldIndex, newIndex, items);
         this.props.saveListCallback(newOldCurrentListItems);
     }
+    resetHoveringOver = (event) =>{
+        this.setState({hoveringOver: -1, hoveringStart: -1});
+    }
     
 
     render() {
@@ -157,7 +161,7 @@ export default class Workspace extends React.Component {
                         <div className="item-number">4.</div>
                         <div className="item-number">5.</div>
                     </div>
-                    <div id="edit-items">
+                    <div id="edit-items" onDragLeave = {this.resetHoveringOver}>
                         {this.state.itemNumber === 0? 
                         <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[0]} type='text'/>: 
                         <div className={this.state.hoveringOver == 0? "top5-item-dragged-to": "top5-item"} onClick={(e) => {this.handleClick(e, 0, items); }}
