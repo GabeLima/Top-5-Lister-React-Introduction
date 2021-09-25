@@ -121,6 +121,7 @@ class App extends React.Component {
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST
     closeCurrentList = () => {
+        console.log("INSIDE CLOSE CURRENT LIST");
         this.setState(prevState => ({
             currentList: null,
             listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
@@ -164,16 +165,19 @@ class App extends React.Component {
         let listRemoving = this.state.listKeyPair.key
         newKeyNamePairs = newKeyNamePairs.filter(item => item.key !== listRemoving)
         console.log(newKeyNamePairs);
+        console.log(this.state.currentList);
+        let newCurrentList = this.state.currentList;
+        newCurrentList.name = "";
         this.setState(prevState => ({
-            currentList: prevState.currentList,
+            currentList: newCurrentList,
             sessionData: {
                 nextKey: prevState.sessionData.nextKey,
                 counter: prevState.sessionData.counter,
                 keyNamePairs: newKeyNamePairs
             }
         }), () => {
+            //ANY AFTER EFFECTS OF DELETING A LIST? YES, HAVE TO SAVE and CLEAR OUT THE STATUSBAR ^ did that with newCurrentList
             this.db.mutationUpdateSessionData(this.state.sessionData);
-            //ANY AFTER EFFECTS OF DELETING A LIST? YES, HAVE TO SAVE
         });
         console.log("Attempting to delete a list... NEED THE NAME");
         this.hideDeleteListModal();
