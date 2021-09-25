@@ -6,20 +6,28 @@ export default class Workspace extends React.Component {
         super(props);
 
         this.state = {
+            oldCurrentListItems : [],
             editActive: false,
             itemNumber: -1,
             text : "",
             items: []
         }
     }
-    handleClick = (event, itemNumber, items) => {
+    handleClick = (event, itemNumber, items, currentList) => {
         if (event.detail === 2) {
-            this.handleToggleEdit(event, itemNumber, items);
+            let newOldCurrentListItems = [];//this.props.currentList.items;
+            // MAKE A DEEP COPY OF THE ITEMS
+            for(let i = 0; i < this.props.currentList.items.length; i ++){
+                newOldCurrentListItems[i] = this.props.currentList.items[i];
+            }
+            console.log(newOldCurrentListItems);
+            this.handleToggleEdit(event, itemNumber, items, newOldCurrentListItems);
         }
         console.log(itemNumber);
     }
-    handleToggleEdit = (event, itemNumber, items) => {
+    handleToggleEdit = (event, itemNumber, items, newOldCurrentListItems) => {
         this.setState(prevState => ({
+            oldCurrentListItems: newOldCurrentListItems,
             editActive: !this.state.editActive,
             itemNumber: itemNumber,
             text : items[this.state.itemNumber],
@@ -36,14 +44,11 @@ export default class Workspace extends React.Component {
         this.handleUpdate(event);
         // this.props.items = this.state.items;
         this.setState({ itemNumber: -1});
-        this.props.saveListCallback();
+        this.props.saveListCallback(this.state.oldCurrentListItems);
     }
     handleKeyPress = (event) => {
         if(event.key === 'Enter'){
-            // this.props.items = this.state.items;
-            this.handleUpdate(event);
-            this.setState({ itemNumber: -1});
-            this.props.saveListCallback();
+            this.handleBlur(event);
         }
     }
     render() {
@@ -63,25 +68,24 @@ export default class Workspace extends React.Component {
                         <div className="item-number">5.</div>
                     </div>
                     <div id="edit-items">
-                    {this.state.itemNumber === 0? 
-                        <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} onChange={this.handleUpdate} defaultValue={items[0]} type='text'/>: 
+                        {this.state.itemNumber === 0? 
+                        <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[0]} type='text'/>: 
                         <div className="top5-item" onClick={(e) => {this.handleClick(e, 0, items); }}>{items[0]}</div>}
 
-
                         {this.state.itemNumber === 1? 
-                        <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} onChange={this.handleUpdate} defaultValue={items[1]} type='text'/>: 
+                        <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[1]} type='text'/>: 
                         <div className="top5-item"  onClick={(e) => {this.handleClick(e, 1, items); }}>{items[1]}</div>}
 
                         {this.state.itemNumber === 2? 
-                        <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} onChange={this.handleUpdate} defaultValue={items[2]} type='text'/>: 
+                        <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[2]} type='text'/>: 
                         <div className="top5-item"  onClick={(e) => {this.handleClick(e, 2, items); }}>{items[2]}</div>}
 
                         {this.state.itemNumber === 3? 
-                        <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} onChange={this.handleUpdate} defaultValue={items[3]} type='text'/>: 
+                        <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[3]} type='text'/>: 
                         <div className="top5-item"  onClick={(e) => {this.handleClick(e, 3, items); }}>{items[3]}</div>}
                         
                         {this.state.itemNumber === 4? 
-                        <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} onChange={this.handleUpdate} defaultValue={items[4]} type='text'/>: 
+                        <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[4]} type='text'/>: 
                         <div className="top5-item"  onClick={(e) => {this.handleClick(e, 4, items); }}>{items[4]}</div>}
                     </div>
                 </div>

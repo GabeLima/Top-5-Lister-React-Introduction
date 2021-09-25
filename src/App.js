@@ -3,6 +3,8 @@ import './App.css';
 
 // IMPORT DATA MANAGEMENT AND TRANSACTION STUFF
 import DBManager from './db/DBManager';
+import jsTPS from './transactions/jsTPS';
+import ChangeItem_Transaction from './transactions/ChangeItem_Transaction'
 
 // THESE ARE OUR REACT COMPONENTS
 import DeleteModal from './components/DeleteModal';
@@ -17,6 +19,7 @@ class App extends React.Component {
 
         // THIS WILL TALK TO LOCAL STORAGE
         this.db = new DBManager();
+        this.tps = new jsTPS();
 
         // GET THE SESSION DATA FROM OUR DATA MANAGER
         let loadedSessionData = this.db.queryGetSessionData();
@@ -182,11 +185,36 @@ class App extends React.Component {
         console.log("Attempting to delete a list... NEED THE NAME");
         this.hideDeleteListModal();
     }
-    saveLists = () =>{
+    saveLists = (oldCurrentListItems) =>{
         console.log("Inside saveLists");
+        console.log(oldCurrentListItems);
+        console.log(this.state.currentList.items);
         this.db.mutationUpdateList(this.state.currentList);
         // this.db.mutationUpdateSessionData(this.state.sessionData);
         // this.Workspace.handleKeyPress(e);
+    }
+
+    addChangeItemTransaction = (oldCurrentListItems) => {
+        let transaction = new ChangeItem_Transaction(this, oldCurrentListItems, this.state.currentList.items);
+        this.tps.addTransaction(transaction);
+    }
+
+    changeItem(oldCurrentListItems) {
+        let newCurrentList = this.state.currentList;
+        newCurrentList.items = oldCurrentListItems;
+        this.setState(prevState => ({
+            currentList: newCurrentList,
+            sessionData: {
+                nextKey: prevState.sessionData.nextKey,
+                counter: prevState.sessionData.counter,
+                keyNamePairs: this.state.sessionData.keyNamePairs //Not sure if this is correct
+            }
+        }), () => {
+            //ANY AFTER EFFECTS?
+        });
+        // this.currentList.items[id] = text;
+        // this.view.update(this.currentList);
+        this.saveLists(oldCurrentListItems);
     }
 
     render() {
@@ -206,7 +234,7 @@ class App extends React.Component {
                 />
                 <Workspace
                     currentList={this.state.currentList} 
-                    saveListCallback = {this.saveLists}/>
+                    saveListCallback = {this.addChangeItemTransaction}/>
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteModal
