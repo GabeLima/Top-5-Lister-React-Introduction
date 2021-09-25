@@ -217,12 +217,26 @@ class App extends React.Component {
         this.saveLists(oldCurrentListItems);
     }
 
+    undo = () => {
+        if (this.tps.hasTransactionToUndo()) {
+            this.tps.undoTransaction();
+        }
+    }
+    redo= () =>{
+        if (this.tps.hasTransactionToRedo()) {
+            this.tps.doTransaction();
+        }
+    }
+
     render() {
         return (
             <div id="app-root">
                 <Banner 
                     title='Top 5 Lister'
-                    closeCallback={this.closeCurrentList} />
+                    closeCallback={this.closeCurrentList} 
+                    undoCallback = {this.undo}
+                    redoCallback = {this.redo}/>
+                    
                 <Sidebar
                     heading='Your Lists'
                     currentList={this.state.currentList}
