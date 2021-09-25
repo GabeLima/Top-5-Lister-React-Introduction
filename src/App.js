@@ -235,7 +235,10 @@ class App extends React.Component {
                     title='Top 5 Lister'
                     closeCallback={this.closeCurrentList} 
                     undoCallback = {this.undo}
-                    redoCallback = {this.redo}/>
+                    redoCallback = {this.redo}
+                    hasUndo = {this.tps.hasTransactionToUndo()}
+                    hasRedo = {this.tps.hasTransactionToRedo()}
+                />
                     
                 <Sidebar
                     heading='Your Lists'
