@@ -80,6 +80,7 @@ class App extends React.Component {
         });
     }
     renameList = (key, newName) => {
+        this.tps.clearAllTransactions();
         let newKeyNamePairs = [...this.state.sessionData.keyNamePairs];
         // NOW GO THROUGH THE ARRAY AND FIND THE ONE TO RENAME
         for (let i = 0; i < newKeyNamePairs.length; i++) {
@@ -110,16 +111,19 @@ class App extends React.Component {
             list.name = newName;
             this.db.mutationUpdateList(list);
             this.db.mutationUpdateSessionData(this.state.sessionData);
+            
         });
     }
     // THIS FUNCTION BEGINS THE PROCESS OF LOADING A LIST FOR EDITING
     loadList = (key) => {
+        this.tps.clearAllTransactions();
         let newCurrentList = this.db.queryGetList(key);
         this.setState(prevState => ({
             currentList: newCurrentList,
             sessionData: prevState.sessionData
         }), () => {
-            // ANY AFTER EFFECTS?
+            // ANY AFTER EFFECTS? CLEAR THE TRANSACTION STACK
+            
         });
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST

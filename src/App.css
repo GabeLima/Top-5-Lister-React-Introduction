@@ -183,16 +183,24 @@ body {
   height: 100%;
   background-color: var(--swatch-status);
 }
-
+/* BACKGROUND OF THE WORKSPACE, PRIMARY OR ACCENT */
 #edit-items {
   position:absolute;
   left:20%;
   top:0%;
   width:80%;
   height: 100%;
-  background-color: var(--swatch-primary);
+  background-color: var(--swatch-primary); 
 }
 
+#edit-items-active {
+  position:absolute;
+  left:20%;
+  top:0%;
+  width:80%;
+  height: 100%;
+  background-color: var(--swatch-accent); 
+}
 .item-number, .top5-item, .top5-item-dragged-to { 
   display:flex;
   align-items: center;
