@@ -1,6 +1,6 @@
 import React from "react";
-import styled from 'styled-components'
-import { DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
+// import styled from 'styled-components'
+// import { DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
 
 // const Container = styled.div`
 // position:absolute;
@@ -20,20 +20,21 @@ export default class Workspace extends React.Component {
             editActive: false,
             itemNumber: -1,
             text : "",
-            items: []
+            items: [],
+            hoveringOver: -1,
+            hoveringStart: -1
         }
     }
     handleClick = (event, itemNumber, items, currentList) => {
-        if(event.detail === 1){
-            this.setState(prevState => ({
-                oldCurrentListItems: prevState.oldCurrentListItems,
-                editActive: prevState.editActive,
-                itemNumber: itemNumber,
-                text : items[itemNumber],
-                items: items,
-                isDragging: false
-              }));
-        }
+        // if(event.detail === 1){
+        //     this.setState(prevState => ({
+        //         oldCurrentListItems: prevState.oldCurrentListItems,
+        //         editActive: prevState.editActive,
+        //         itemNumber: itemNumber,
+        //         text : items[itemNumber],
+        //         items: items,
+        //       }));
+        // }
         if (event.detail === 2) {
             let newOldCurrentListItems = [];//this.props.currentList.items;
             // MAKE A DEEP COPY OF THE ITEMS
@@ -69,22 +70,22 @@ export default class Workspace extends React.Component {
             this.handleBlur(event);
         }
     }
-    handleOnDragEnd = (result, items) =>{
-        if(!result.destination) return;
-        let oldIndex = result.source.index;
-        let newIndex = result.destination.index;
-        //console.log("Passed items from on drag end: ", items);
-        //deep copy the list before swapping so we can pass it to save list callback
-        let newOldCurrentListItems = [];//this.props.currentList.items;
-        for(let i = 0; i < items.length; i ++){
-            newOldCurrentListItems[i] = this.props.currentList.items[i];
-        }
-        this.setState({ items: items});
-        this.moveItem(oldIndex, newIndex, items);
-        //console.log(result);
-        //console.log("New lists: ", this.state.items);
-        this.props.saveListCallback(newOldCurrentListItems);
-    }
+    // handleOnDragEnd = (result, items) =>{
+    //     if(!result.destination) return;
+    //     let oldIndex = result.source.index;
+    //     let newIndex = result.destination.index;
+    //     //console.log("Passed items from on drag end: ", items);
+    //     //deep copy the list before swapping so we can pass it to save list callback
+    //     let newOldCurrentListItems = [];//this.props.currentList.items;
+    //     for(let i = 0; i < items.length; i ++){
+    //         newOldCurrentListItems[i] = this.props.currentList.items[i];
+    //     }
+    //     this.setState({ items: items});
+    //     this.moveItem(oldIndex, newIndex, items);
+    //     //console.log(result);
+    //     //console.log("New lists: ", this.state.items);
+    //     this.props.saveListCallback(newOldCurrentListItems);
+    // }
     moveItem(oldIndex, newIndex, items){
         // console.log("Old index: " + oldIndex);
         // console.log("New index: " + newIndex);
@@ -104,13 +105,36 @@ export default class Workspace extends React.Component {
             i += direction;
             
         }
-        //console.log("List after swapping: ", list);
+        console.log("List after swapping: ", list);
         //update the state of the new items array
         this.setState({ items: list});
     }
     handleOnDragStart = (result) =>{
         this.setState({ isDragging: true});
     }
+    onDragOver = (e, hoveringOverNumber) =>{
+        console.log("Hovering over: ", hoveringOverNumber);
+        this.setState({ hoveringOver: hoveringOverNumber});
+    }
+    onDragStart = (e, hoveringStartNumber) =>{
+        console.log("Dragging: ", hoveringStartNumber);
+        this.setState({ hoveringStart: hoveringStartNumber});
+    }
+    onDragEnd = (items) =>{
+        if(this.state.hoveringOver < 0 || this.state.hoveringOver === this.hoveringStart) return;
+        console.log("On Drag end firing...");
+        let oldIndex = this.state.hoveringStart;
+        let newIndex = this.state.hoveringOver;
+        let newOldCurrentListItems = [];//this.props.currentList.items;
+        for(let i = 0; i < items.length; i ++){
+            newOldCurrentListItems[i] = this.props.currentList.items[i];
+        }
+        //this.setState({ items: items, hoveringOver: -1, hoveringStart: -1});
+        //this.moveItem(oldIndex, newIndex, items);
+        // this.props.saveListCallback(newOldCurrentListItems);
+    }
+    
+
     render() {
         const { currentList, isDragging} = this.props;
         let items = ["","","","",""];
@@ -132,68 +156,32 @@ export default class Workspace extends React.Component {
                         <div className="item-number">4.</div>
                         <div className="item-number">5.</div>
                     </div>
-                    <DragDropContext onDragEnd={(e) => this.handleOnDragEnd(e, items)} onDragStart = {this.handleOnDragStart} >
-                        <Droppable droppableId = "characters">
-                            {(provided) => (
+                    <div id="edit-items">
+                        {this.state.itemNumber === 0? 
+                        <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[0]} type='text'/>: 
+                        <div className="top5-item" onClick={(e) => {this.handleClick(e, 0, items); }}
+                        onDragLeave= {this.onDragEnd(items)} onDragOver = {(e) => this.onDragOver(e, 0)} onDragStart = {(e) => this.onDragStart(e, 0)} draggable = "true">{items[0]}</div>}
 
-                            <div id={backGroundId} {...provided.droppableProps} ref = {provided.innerRef}>
+                        {this.state.itemNumber === 1? 
+                        <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[1]} type='text'/>: 
+                        <div className="top5-item"  onClick={(e) => {this.handleClick(e, 1, items); }} 
+                        onDragLeave = {this.onDragEnd(items)} onDragOver = {(e) => this.onDragOver(e, 1)} onDragStart = {(e) => this.onDragStart(e, 1)} draggable = "true">{items[1]}</div>}
 
-                                <Draggable draggableId = "top5-item-0" index = {0}>
-                                    {(provided, snapshot) => (
-                                        <div className="top5-item" {...provided.draggableProps} {...provided.dragHandleProps} ref = {provided.innerRef}>
-                                            {this.state.itemNumber === 0? 
-                                            <input autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[0]} type='text'/>: 
-                                            <div onClick={(e) => {this.handleClick(e, 0, items); }}>{items[0]}</div>}
-                                        </div>
-                                    )}
-                                </Draggable>
-                                
-                                <Draggable draggableId = "top5-item-1" index = {1}>
-                                    {(provided, snapshot) => (
-                                        <div className="top5-item" {...provided.draggableProps} {...provided.dragHandleProps} ref = {provided.innerRef}>
-                                            {this.state.itemNumber === 1? 
-                                            <input autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[1]} type='text'/>: 
-                                            <div onClick={(e) => {this.handleClick(e, 1, items); }}>{items[1]}</div>}
-                                        </div>
-                                    )}
-                                </Draggable>
-
-                                <Draggable draggableId = "top5-item-2" index = {2}>
-                                    {(provided, snapshot) => (
-                                        <div className="top5-item" {...provided.draggableProps} {...provided.dragHandleProps} ref = {provided.innerRef}>
-                                            {this.state.itemNumber === 2? 
-                                            <input autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[2]} type='text'/>: 
-                                            <div onClick={(e) => {this.handleClick(e, 2, items); }}>{items[2]}</div>}
-                                        </div>
-                                    )}
-                                </Draggable>
-
-                                <Draggable draggableId = "top5-item-3" index = {3}>
-                                    {(provided, snapshot) => (
-                                        <div className="top5-item" {...provided.draggableProps} {...provided.dragHandleProps} ref = {provided.innerRef} >
-                                            {this.state.itemNumber === 3? 
-                                            <input autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[3]} type='text'/>: 
-                                            <div onClick={(e) => {this.handleClick(e, 3, items); }}>{items[3]}</div>}
-                                        </div>
-                                    )}
-                                </Draggable>
-                                
-                                <Draggable draggableId = "top5-item-4" index = {4}>
-                                    {(provided, snapshot) => (
-                                        <div className="top5-item" {...provided.draggableProps} {...provided.dragHandleProps} ref = {provided.innerRef} >
-                                            {this.state.itemNumber === 4? 
-                                            <input autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[4]} type='text'/>: 
-                                            <div onClick={(e) => {this.handleClick(e, 4, items); }}>{items[4]}</div>}
-                                        </div>
-                                    )}
-                                </Draggable>
-                            
-                            
-                            {provided.placeholder}
-                            </div>
-                        )}
-                        </Droppable>
-                    </DragDropContext>
+                        {this.state.itemNumber === 2? 
+                        <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[2]} type='text'/>: 
+                        <div className="top5-item"  onClick={(e) => {this.handleClick(e, 2, items); }}
+                        onDragLeave = {this.onDragEnd(items)} onDragOver = {(e) => this.onDragOver(e, 2)} onDragStart = {(e) => this.onDragStart(e, 2)} draggable = "true">{items[2]}</div>}
+                        
+                        {this.state.itemNumber === 3? 
+                        <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[3]} type='text'/>: 
+                        <div className="top5-item"  onClick={(e) => {this.handleClick(e, 3, items); }} 
+                        onDragLeave = {this.onDragEnd(items)} onDragOver = {(e) => this.onDragOver(e, 3)} onDragStart = {(e) => this.onDragStart(e, 3)} draggable = "true">{items[3]}</div>}
+                        
+                        {this.state.itemNumber === 4? 
+                        <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[4]} type='text'/>: 
+                        <div className="top5-item"  onClick={(e) => {this.handleClick(e, 4, items); }}
+                        onDragLeave = {this.onDragEnd(items)} onDragOver = {(e) => this.onDragOver(e, 4)} onDragStart = {(e) => this.onDragStart(e, 4)} draggable = "true">{items[4]}</div>}
+                    </div>
                 </div>
             </div>
         )
