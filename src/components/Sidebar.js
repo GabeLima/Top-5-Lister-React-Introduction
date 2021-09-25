@@ -1,6 +1,5 @@
 import React from "react";
 import ListCard from "./ListCard";
-import { DragDropContext, Droppable} from "react-beautiful-dnd";
 
 export default class Sidebar extends React.Component {
     render() {
