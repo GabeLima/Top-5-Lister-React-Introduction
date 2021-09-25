@@ -2,7 +2,7 @@ import React from "react";
 
 export default class EditToolbar extends React.Component {
     render() {
-        const { closeCallback, undoCallback, redoCallback, hasUndo, hasRedo} = this.props;
+        const { closeCallback, undoCallback, redoCallback, hasUndo, hasRedo, currentList} = this.props;
         return (
             <div id="edit-toolbar">
                 {hasUndo ? 
@@ -34,12 +34,21 @@ export default class EditToolbar extends React.Component {
                             &#x21B7;
                     </div>
                 }
-                <div
-                    onClick={closeCallback}
-                    id='close-button'
-                    className="top5-button">
-                        &#x24E7;
-                </div>
+                {currentList? 
+                    <div
+                        onClick={closeCallback}
+                        id='close-button'
+                        className="top5-button">
+                            &#x24E7;
+                    </div>
+                :
+                    <div
+                        onClick={closeCallback}
+                        id='close-button'
+                        className="top5-button-disabled">
+                            &#x24E7;
+                    </div>
+                }
             </div>
         )
     }

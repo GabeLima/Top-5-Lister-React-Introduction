@@ -169,10 +169,10 @@ class App extends React.Component {
         newKeyNamePairs = newKeyNamePairs.filter(item => item.key !== listRemoving)
         console.log(newKeyNamePairs);
         console.log(this.state.currentList);
-        let newCurrentList = this.state.currentList;
-        newCurrentList.name = "";
+        // let newCurrentList = this.state.currentList;
+        // newCurrentList.name = "";
         this.setState(prevState => ({
-            currentList: newCurrentList,
+            currentList: null,
             sessionData: {
                 nextKey: prevState.sessionData.nextKey,
                 counter: prevState.sessionData.counter,
@@ -238,6 +238,7 @@ class App extends React.Component {
                     redoCallback = {this.redo}
                     hasUndo = {this.tps.hasTransactionToUndo()}
                     hasRedo = {this.tps.hasTransactionToRedo()}
+                    currentList = {this.state.currentList}
                 />
                     
                 <Sidebar
