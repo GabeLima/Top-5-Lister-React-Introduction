@@ -13,8 +13,6 @@ import Sidebar from './components/Sidebar.js';
 import Workspace from './components/Workspace.js';
 import Statusbar from './components/Statusbar.js';
 
-import ReactDOM from "react-dom";
-
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -131,6 +129,7 @@ class App extends React.Component {
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST
     closeCurrentList = () => {
+        this.tps.clearAllTransactions();
         console.log("INSIDE CLOSE CURRENT LIST");
         this.setState(prevState => ({
             currentList: null,
@@ -194,21 +193,32 @@ class App extends React.Component {
     }
     saveLists = (oldCurrentListItems) =>{
         console.log("Inside saveLists");
-        console.log(oldCurrentListItems);
-        console.log(this.state.currentList.items);
         this.db.mutationUpdateList(this.state.currentList);
-        // this.db.mutationUpdateSessionData(this.state.sessionData);
-        // this.Workspace.handleKeyPress(e);
     }
 
     addChangeItemTransaction = (oldCurrentListItems) => {
-        let transaction = new ChangeItem_Transaction(this, oldCurrentListItems, this.state.currentList.items);
+        console.log("ADD CHANGE Old current List items: ", oldCurrentListItems);
+        console.log("ADD CHANGE New current list items: ", this.state.currentList.items);
+        //CREATE DEEP COPIES OF EACH
+        // for(let i = 0; i < this.state.currentList.items.length; i ++){
+        //     deepCurrentList[i] = this.state.currentList.items[i];
+        // }
+        let deepCurrentList = JSON.parse(JSON.stringify(this.state.currentList.items));
+        // deepCurrentList[5] = "potato";
+        // for(let i = 0; i < this.state.currentList.items.length; i ++){
+        //     deepOldItems[i] = oldCurrentListItems[i];
+        // }
+        let deepOldItems = JSON.parse(JSON.stringify(oldCurrentListItems));
+        let transaction = new ChangeItem_Transaction(this, deepOldItems, deepCurrentList);
         this.tps.addTransaction(transaction);
     }
 
     changeItem(oldCurrentListItems) {
+        console.log("Old current List items: ", oldCurrentListItems);
+        console.log("New current list items: ", this.state.currentList.items);
         let newCurrentList = this.state.currentList;
         newCurrentList.items = oldCurrentListItems;
+        newCurrentList = JSON.parse(JSON.stringify(newCurrentList));
         this.setState(prevState => ({
             currentList: newCurrentList,
             sessionData: {
@@ -219,9 +229,7 @@ class App extends React.Component {
         }), () => {
             //ANY AFTER EFFECTS?
         });
-        // this.currentList.items[id] = text;
-        // this.view.update(this.currentList);
-        this.saveLists(oldCurrentListItems);
+        this.saveLists(newCurrentList);
     }
 
     undo = () => {

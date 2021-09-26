@@ -1,4 +1,3 @@
-'use strict'
 
 /**
  * jsTPS_Transaction
@@ -150,7 +149,7 @@ export default class jsTPS {
 
         // ADD THE TRANSACTION
         this.transactions[this.mostRecentTransaction+1] = transaction;
-
+        console.log("Calling the transaction stack: ", this.transactions);
         // AND EXECUTE IT
         this.doTransaction();
     }
@@ -193,7 +192,7 @@ export default class jsTPS {
      */
     clearAllTransactions() {
         // REMOVE ALL THE TRANSACTIONS
-        this.transactions = new Array();
+        this.transactions = [];
         
         // MAKE SURE TO RESET THE LOCATION OF THE
         // TOP OF THE TPS STACK TOO
