@@ -27,6 +27,7 @@ export default class Workspace extends React.Component {
         }
     }
     handleClick = (event, itemNumber, items, currentList) => {
+        if(!currentList) return;
         // if(event.detail === 1){
         //     this.setState(prevState => ({
         //         oldCurrentListItems: prevState.oldCurrentListItems,
