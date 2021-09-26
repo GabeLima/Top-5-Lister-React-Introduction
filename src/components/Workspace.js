@@ -22,7 +22,8 @@ export default class Workspace extends React.Component {
             text : "",
             items: [],
             hoveringOver: -1,
-            hoveringStart: -1
+            hoveringStart: -1,
+            hoveringBoolean:false
         }
     }
     handleClick = (event, itemNumber, items, currentList) => {
@@ -114,6 +115,7 @@ export default class Workspace extends React.Component {
         this.setState({ isDragging: true});
     }
     onDragOver = (e, hoveringOverNumber) =>{
+        this.setState({hoveringBoolean: true});
         console.log("Hovering over: ", hoveringOverNumber);
         this.setState({ hoveringOver: hoveringOverNumber});
     }
@@ -122,7 +124,9 @@ export default class Workspace extends React.Component {
         this.setState({ hoveringStart: hoveringStartNumber});
     }
     onDragEnd = (event, items) =>{
-        console.log(event);
+        console.log("Hovering over: ", this.state.hoveringOver);
+        console.log("Hovering Start: ", this.state.hoveringStart)
+        console.log("event", event);
         if(this.state.hoveringOver < 0 || this.state.hoveringOver === this.hoveringStart) return;
         console.log("On Drag end firing...");
         let oldIndex = this.state.hoveringStart;
@@ -131,12 +135,13 @@ export default class Workspace extends React.Component {
         for(let i = 0; i < items.length; i ++){
             newOldCurrentListItems[i] = this.props.currentList.items[i];
         }
-        this.setState({ items: items, hoveringOver: -1, hoveringStart: -1});
         this.moveItem(oldIndex, newIndex, items);
+        this.setState({ items: items, hoveringOver: -1, hoveringStart: -1});
         this.props.saveListCallback(newOldCurrentListItems);
     }
     resetHoveringOver = (event) =>{
-        this.setState({hoveringOver: -1, hoveringStart: -1});
+        console.log("Restting hovering over...");
+        this.setState({hoveringBoolean: false});
     }
     
 
@@ -164,28 +169,28 @@ export default class Workspace extends React.Component {
                     <div id="edit-items" onDragLeave = {this.resetHoveringOver}>
                         {this.state.itemNumber === 0? 
                         <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[0]} type='text'/>: 
-                        <div className={this.state.hoveringOver == 0? "top5-item-dragged-to": "top5-item"} onClick={(e) => {this.handleClick(e, 0, items); }}
-                        onDragEnd = {(e) => this.onDragEnd(e, items)}onDragOver = {(e) => this.onDragOver(e, 0)} onDragStart = {(e) => this.onDragStart(e, 0)} draggable = "true">{items[0]}</div>}
+                        <div className={this.state.hoveringOver == 0 && this.state.hoveringBoolean? "top5-item-dragged-to": "top5-item"} onClick={(e) => {this.handleClick(e, 0, items, currentList); }}
+                        onDragEnd = {(e) => this.onDragEnd(e, items, this.state.hoveringOver)}onDragOver = {(e) => this.onDragOver(e, 0)} onDragStart = {(e) => this.onDragStart(e, 0)} draggable ={currentList? "true": "false"}>{items[0]}</div>}
 
                         {this.state.itemNumber === 1? 
                         <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[1]} type='text'/>: 
-                        <div className={this.state.hoveringOver == 1? "top5-item-dragged-to": "top5-item"}  onClick={(e) => {this.handleClick(e, 1, items); }} 
-                        onDragEnd = {(e) => this.onDragEnd(e, items)}onDragOver = {(e) => this.onDragOver(e, 1)} onDragStart = {(e) => this.onDragStart(e, 1)} draggable = "true">{items[1]}</div>}
+                        <div className={this.state.hoveringOver == 1&& this.state.hoveringBoolean? "top5-item-dragged-to": "top5-item"}  onClick={(e) => {this.handleClick(e, 1, items, currentList); }} 
+                        onDragEnd = {(e) => this.onDragEnd(e, items, 1)}onDragOver = {(e) => this.onDragOver(e, 1)} onDragStart = {(e) => this.onDragStart(e, 1)} draggable = {currentList? "true": "false"}>{items[1]}</div>}
 
                         {this.state.itemNumber === 2? 
                         <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[2]} type='text'/>: 
-                        <div className={this.state.hoveringOver == 2? "top5-item-dragged-to": "top5-item"}  onClick={(e) => {this.handleClick(e, 2, items); }}
-                        onDragEnd = {(e) => this.onDragEnd(e, items)} onDragOver = {(e) => this.onDragOver(e, 2)} onDragStart = {(e) => this.onDragStart(e, 2)} draggable = "true">{items[2]}</div>}
+                        <div className={this.state.hoveringOver == 2&& this.state.hoveringBoolean? "top5-item-dragged-to": "top5-item"}  onClick={(e) => {this.handleClick(e, 2, items, currentList); }}
+                        onDragEnd = {(e) => this.onDragEnd(e, items, 2)} onDragOver = {(e) => this.onDragOver(e, 2)} onDragStart = {(e) => this.onDragStart(e, 2)} draggable = {currentList? "true": "false"}>{items[2]}</div>}
                         
                         {this.state.itemNumber === 3? 
                         <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[3]} type='text'/>: 
-                        <div className={this.state.hoveringOver == 3? "top5-item-dragged-to": "top5-item"}  onClick={(e) => {this.handleClick(e, 3, items); }} 
-                        onDragEnd = {(e) => this.onDragEnd(e, items)} onDragOver = {(e) => this.onDragOver(e, 3)} onDragStart = {(e) => this.onDragStart(e, 3)} draggable = "true">{items[3]}</div>}
+                        <div className={this.state.hoveringOver == 3&& this.state.hoveringBoolean? "top5-item-dragged-to": "top5-item"}  onClick={(e) => {this.handleClick(e, 3, items, currentList); }} 
+                        onDragEnd = {(e) => this.onDragEnd(e, items, 3)} onDragOver = {(e) => this.onDragOver(e, 3)} onDragStart = {(e) => this.onDragStart(e, 3)} draggable = {currentList? "true": "false"}>{items[3]}</div>}
                         
                         {this.state.itemNumber === 4? 
                         <input className="top5-item" autoFocus onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} defaultValue={items[4]} type='text'/>: 
-                        <div className={this.state.hoveringOver == 4? "top5-item-dragged-to": "top5-item"}  onClick={(e) => {this.handleClick(e, 4, items); }}
-                        onDragEnd = {(e) => this.onDragEnd(e, items)} onDragOver = {(e) => this.onDragOver(e, 4)} onDragStart = {(e) => this.onDragStart(e, 4)} draggable = "true">{items[4]}</div>}
+                        <div className={this.state.hoveringOver == 4&& this.state.hoveringBoolean? "top5-item-dragged-to": "top5-item"}  onClick={(e) => {this.handleClick(e, 4, items, currentList); }}
+                        onDragEnd = {(e) => this.onDragEnd(e, items, 4)} onDragOver = {(e) => this.onDragOver(e, 4)} onDragStart = {(e) => this.onDragStart(e, 4)} draggable = {currentList? "true": "false"}>{items[4]}</div>}
                     </div>
                 </div>
             </div>

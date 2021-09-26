@@ -232,6 +232,27 @@ class App extends React.Component {
         }
     }
 
+    detectCtrlZ = (e) =>{
+        console.log("ahhhh");
+    }
+    
+    // componentDidMount() {
+    //     //ReactDOM.findDOMNode(this).addEventListener('nv-event', this._handleNVEvent);
+    //     document.addEventListener('keydown', function(event){
+    //         if (event.ctrlKey && event.key === 'z') {
+    //           this.undo();
+    //         }
+    //         else if(event.ctrlKey && event.key === 'y'){
+    //             this.redo();
+    //         }
+    //       });
+    // }
+
+
+
+    
+
+
     render() {
         return (
             <div id="app-root">
