@@ -13,6 +13,8 @@ import Sidebar from './components/Sidebar.js';
 import Workspace from './components/Workspace.js';
 import Statusbar from './components/Statusbar.js';
 
+import ReactDOM from "react-dom";
+
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -33,6 +35,7 @@ class App extends React.Component {
                 name : ""
             }
         }
+        this.undo = this.undo.bind(this);
     }
     sortKeyNamePairsByName = (keyNamePairs) => {
         keyNamePairs.sort((keyPair1, keyPair2) => {
@@ -225,30 +228,64 @@ class App extends React.Component {
         if (this.tps.hasTransactionToUndo()) {
             this.tps.undoTransaction();
         }
+        // UPDATING STATE FOR CTRL Z PURPOSES.
+        this.setState(prevState => ({
+            currentList: prevState.currentList,
+            sessionData: {
+                nextKey: prevState.sessionData.nextKey,
+                counter: prevState.sessionData.counter,
+                keyNamePairs: this.state.sessionData.keyNamePairs //Not sure if this is correct
+            }
+        }), () => {
+            //ANY AFTER EFFECTS?
+        });
     }
     redo= () =>{
         if (this.tps.hasTransactionToRedo()) {
             this.tps.doTransaction();
         }
+        // UPDATING STATE FOR CTRL Y PURPOSES.
+        this.setState(prevState => ({
+            currentList: prevState.currentList,
+            sessionData: {
+                nextKey: prevState.sessionData.nextKey,
+                counter: prevState.sessionData.counter,
+                keyNamePairs: this.state.sessionData.keyNamePairs //Not sure if this is correct
+            }
+        }), () => {
+            //ANY AFTER EFFECTS?
+        });
     }
 
-    detectCtrlZ = (e) =>{
-        console.log("ahhhh");
+    handler = (event) =>{
+        if (event.ctrlKey && event.key === 'z') {
+            console.log("ctrlz pressed");
+          this.undo();
+          console.log("After undo: ", this.tps.hasTransactionToUndo());
+        }
+        else if(event.ctrlKey && event.key === 'y'){
+            this.redo();
+        }
     }
     
-    // componentDidMount() {
-    //     //ReactDOM.findDOMNode(this).addEventListener('nv-event', this._handleNVEvent);
-    //     document.addEventListener('keydown', function(event){
-    //         if (event.ctrlKey && event.key === 'z') {
-    //           this.undo();
-    //         }
-    //         else if(event.ctrlKey && event.key === 'y'){
-    //             this.redo();
-    //         }
-    //       });
-    // }
+    componentDidMount() {
+        document.addEventListener('keydown', this.handler);
+    }
+    // keydownHandler(e){
+    //     if(e.keyCode===13 && e.ctrlKey) this.showMessage()
+    //   }
+    // componentDidMount(){
+    //     document.addEventListener('keydown',this.keydownHandler);
+    //   }
+    //   componentWillUnmount(){
+    //     document.removeEventListener('keydown',this.keydownHandler);
+    //   }
+    //   showMessage () {
+    //     alert('SOME MESSAGE');
+    //   }
 
 
+      
 
     
 
