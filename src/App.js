@@ -200,6 +200,16 @@ class App extends React.Component {
     }
 
     addChangeItemTransaction = (oldCurrentListItems) => {
+        let equalCount = 0;
+        for(let i = 0; i < this.state.currentList.items.length; i ++){
+            if(oldCurrentListItems[i] === this.state.currentList.items[i]){
+                equalCount += 1;
+            }
+        }
+        // Essentially saying if theres no actual update to the item, don't add a transaction
+        if(equalCount === 5){
+            return; 
+        }
         console.log("ADD CHANGE Old current List items: ", oldCurrentListItems);
         console.log("ADD CHANGE New current list items: ", this.state.currentList.items);
         //CREATE DEEP COPIES OF EACH
