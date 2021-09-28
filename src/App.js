@@ -122,6 +122,10 @@ class App extends React.Component {
     loadList = (key) => {
         this.tps.clearAllTransactions();
         let newCurrentList = this.db.queryGetList(key);
+        if(this.state.currentList != null && newCurrentList.key === this.state.currentList.key){
+            console.log("Returning early to prevent clearing of the transaction stack!");
+            return;
+        }
         this.setState(prevState => ({
             currentList: newCurrentList,
             sessionData: prevState.sessionData
