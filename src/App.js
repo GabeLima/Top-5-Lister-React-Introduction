@@ -324,7 +324,8 @@ class App extends React.Component {
                     currentList={this.state.currentList} 
                     saveListCallback = {this.addChangeItemTransaction}/>
                 <Statusbar 
-                    currentList={this.state.currentList} />
+                    currentList={this.state.currentList} 
+                    />
                 <DeleteModal
                     hideDeleteListModalCallback={this.hideDeleteListModal}
                     deleteListCallBack = {this.deleteListHideModal}

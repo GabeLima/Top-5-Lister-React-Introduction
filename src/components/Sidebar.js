@@ -10,6 +10,10 @@ export default class Sidebar extends React.Component {
                 deleteListCallback, 
                 loadListCallback,
                 renameListCallback} = this.props;
+            let addListButton = "top5-button";
+            if(currentList !== null){
+                addListButton = "top5-button-disabled";
+            }
         return (
             <div id="top5-sidebar">
                 <div id="sidebar-heading">
@@ -17,7 +21,7 @@ export default class Sidebar extends React.Component {
                         type="button" 
                         id="add-list-button" 
                         onClick={createNewListCallback}
-                        className="top5-button" 
+                        className={addListButton}
                         value="+" />
                     {heading}
                 </div>
