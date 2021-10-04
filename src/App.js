@@ -84,15 +84,22 @@ class App extends React.Component {
         });
     }
     renameList = (key, newName) => {
-        this.tps.clearAllTransactions();
+        // let shouldClearTransactions = true;
         let newKeyNamePairs = [...this.state.sessionData.keyNamePairs];
         // NOW GO THROUGH THE ARRAY AND FIND THE ONE TO RENAME
         for (let i = 0; i < newKeyNamePairs.length; i++) {
             let pair = newKeyNamePairs[i];
             if (pair.key === key) {
+                // if(pair.name === newName){
+                //     shouldClearTransactions = false;
+                //     console.log("Shouldn't clear the transaction stack...");
+                // }
                 pair.name = newName;
             }
         }
+        // if(shouldClearTransactions){
+        //     this.tps.clearAllTransactions();
+        // }
         this.sortKeyNamePairsByName(newKeyNamePairs);
 
         // WE MAY HAVE TO RENAME THE currentList
@@ -120,12 +127,13 @@ class App extends React.Component {
     }
     // THIS FUNCTION BEGINS THE PROCESS OF LOADING A LIST FOR EDITING
     loadList = (key) => {
-        this.tps.clearAllTransactions();
         let newCurrentList = this.db.queryGetList(key);
         if(this.state.currentList != null && newCurrentList.key === this.state.currentList.key){
             console.log("Returning early to prevent clearing of the transaction stack!");
             return;
         }
+        console.log("Callling clear all transactions from load list...");
+        this.tps.clearAllTransactions();
         this.setState(prevState => ({
             currentList: newCurrentList,
             sessionData: prevState.sessionData
